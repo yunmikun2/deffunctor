@@ -113,20 +113,12 @@ defmodule Deffunctor.DefinitionTest do
     end
   end
 
-  describe "wrap_body_in_module/3" do
+  describe "functor_instance_module/2" do
     test "creates unique module name" do
       module = TheModule
       attrs = [quote(do: Module1), quote(do: 2)]
 
-      body =
-        quote do
-          def f, do: module.(value)
-        end
-
-      assert {:defmodule, _, [module_name | _]} =
-               Definition.wrap_body_in_module(module, attrs, body)
-
-      assert module_name ==
+      assert Definition.functor_instance_module(module, attrs) ==
                TheModule.InstanceCE539BD2FEFD5A41338BBE32A3E68F0E2FB2DECE15CCD90A4E36B925
     end
   end

@@ -46,17 +46,17 @@ defmodule Deffunctor.Definition do
     end)
   end
 
-  def wrap_body_in_module(module, attrs, body) do
+  def wrap_body_in_module(module, body) do
     quote do
-      defmodule unquote(Module.concat(module, functor_instance_suffix(attrs))) do
+      defmodule unquote(module) do
         unquote(body)
       end
     end
   end
 
-  defp functor_instance_suffix(attrs) do
+  def functor_instance_module(module, attrs) do
     binary = :erlang.term_to_binary(attrs)
     hash = :crypto.hash(:sha3_224, binary)
-    "Instance#{Base.encode16(hash)}"
+    Module.concat(module, "Instance#{Base.encode16(hash)}")
   end
 end

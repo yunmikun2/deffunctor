@@ -17,15 +17,21 @@ defmodule Deffunctor do
               unquote(attrs)
             )
 
-          module_ast =
-            Definition.wrap_body_in_module(
+          module_name =
+            Definition.functor_instance_module(
               unquote(module),
-              unquote(attrs),
-              body
+              unquote(attrs)
             )
 
-          [{module, _bytecode}] = Code.compile_quoted(module_ast)
-          module
+          case Code.ensure_compiled(module_name) do
+            {:module, module} ->
+              module
+
+            {:error, _} ->
+              module_ast = Definition.wrap_body_in_module(module_name, body)
+              [{module, _bytecode}] = Code.compile_quoted(module_ast)
+              module
+          end
         end
       end
     end
